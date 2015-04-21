@@ -27,6 +27,9 @@ function helpersTest() {
 
     var out = applyTemplatingInline("Before ${var1} and after.", map).val;
     equal(out, "Before val1 and after.", "ok inline, within text: " + out);
+    
+    var out = applyTemplatingInline("Before ${var1} and after ${var2}.", map).val;
+    equal(out, "Before val1 and after val2.", "ok inline, within text, multiple vars: " + out);    
 
     var out = applyTemplatingInline("nothing to do", map).val;
     equal(out, "nothing to do", "ok inline, NTD.");

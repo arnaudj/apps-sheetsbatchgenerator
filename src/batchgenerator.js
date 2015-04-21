@@ -75,33 +75,21 @@ function applyTemplating(values, outputDoc) {
  */
 function applyTemplatingInline(cell, map) {
   var hits = 0;
-
-  for(var watchdog=0; watchdog < 100; watchdog++){
-    var beginIdx = cell.indexOf("${");
-    if (beginIdx == -1)
-      break;
-
-    Logger.log("beginIdx: " + beginIdx);
-
-    var endIdx = cell.indexOf("}", beginIdx);
-    if (endIdx == -1) {
-      break;
-    }
-    Logger.log("endIdx: " + endIdx);
-
-    var varName = "${" + cell.substr(beginIdx + 2, endIdx - (beginIdx + 2)) + "}";
-    Logger.log("varName: " + varName);
-
+  var out = cell;
+  cell.replace(/(\${[a-zA-Z0-9]*}*)/g, function(match, $1, $2){
+    Logger.log("regex: #" + $1 + "# / " + $2 + " - map: " + JSON.stringify(map));
+    
+    var varName = $1;
     if (map.hasOwnProperty(varName)) {
       var replacementVal = map[varName];
       Logger.log("replacementVal: " + replacementVal);
-      cell = cell.replace(varName, replacementVal);
+      out = out.replace(varName, replacementVal);
       hits++;
-      Logger.log("cell after replace: ##" + cell+"##");
+      Logger.log("cell after replace: ##" + out +"##");      
     }
-  }
-
-  return {"val": cell, "hits": hits};
+  });
+  
+  return {"val": out, "hits": hits};   
 }
 
 function produceOutputDoc(sourceSheet, outputDoc) {
