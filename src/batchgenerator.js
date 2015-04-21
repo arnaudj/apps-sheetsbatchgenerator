@@ -48,6 +48,50 @@ function generateBatch() {
   }
 }
 
+function applyTemplating(values, outputDoc) {
+  var tplHits = 0;
+  for (r=0; r<values.length; r++) {
+    for (c=0; c<values[0].length; c++) {
+      var cell = values[r][c];
+      if (outputDoc.hasOwnProperty(cell)) {
+        cell = outputDoc[cell];
+        tplHits++, totalTemplateHits++;
+      } else if (cell.indexOf("${") != -1){
+        // possible case: vars mixed with content
+        var ret = applyTemplatingInline(cell, outputDoc);
+        cell = ret.val;
+        tplHits += ret.hits;
+        totalTemplateHits += ret.hits;
+      }
+      values[r][c] = cell;
+    }
+  }
+
+  return tplHits;
+}
+
+/**
+ * Attempt to replace all vars inline
+ */
+function applyTemplatingInline(cell, map) {
+  var hits = 0;
+  var out = cell;
+  cell.replace(/(\${[a-zA-Z0-9]*}*)/g, function(match, $1, $2){
+    Logger.log("regex: #" + $1 + "# / " + $2 + " - map: " + JSON.stringify(map));
+    
+    var varName = $1;
+    if (map.hasOwnProperty(varName)) {
+      var replacementVal = map[varName];
+      Logger.log("replacementVal: " + replacementVal);
+      out = out.replace(varName, replacementVal);
+      hits++;
+      Logger.log("cell after replace: ##" + out +"##");      
+    }
+  });
+  
+  return {"val": out, "hits": hits};   
+}
+
 function produceOutputDoc(sourceSheet, outputDoc) {
   // Duplicate
   Logger.log("Ready to duplicate current spreadsheet.");
@@ -67,16 +111,9 @@ function produceOutputDoc(sourceSheet, outputDoc) {
   // TODO Walk other sheets as well (or drop them)
   var range = ssDest.getDataRange();
   var values = range.getValues();
-  var tplHits = 0;
-  for (r=0; r<values.length; r++) {
-    for (c=0; c<values[0].length; c++) {
-      var cell = values[r][c];
-      if (outputDoc.hasOwnProperty(cell)) {
-        values[r][c] = outputDoc[cell];
-        tplHits++, totalTemplateHits++;
-      }
-    }
-  }
+
+  var tplHits = applyTemplating(values, outputDoc);
+
   range.setValues(values); // commit changes
   Logger.log("Spreadsheet '" + ssDest.getName() + "': " + tplHits + " variables replaced.");
 
@@ -127,4 +164,3 @@ function loadTemplatesData(range) {
   }
   return outputDocs;
 }
-
