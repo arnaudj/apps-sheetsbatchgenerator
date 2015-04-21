@@ -48,6 +48,21 @@ function generateBatch() {
   }
 }
 
+function applyTemplating(values, outputDoc) {
+  var tplHits = 0;
+  for (r=0; r<values.length; r++) {
+    for (c=0; c<values[0].length; c++) {
+      var cell = values[r][c];
+      if (outputDoc.hasOwnProperty(cell)) {
+        values[r][c] = outputDoc[cell];
+        tplHits++, totalTemplateHits++;
+      }
+    }
+  }
+
+  return tplHits;
+}
+
 function produceOutputDoc(sourceSheet, outputDoc) {
   // Duplicate
   Logger.log("Ready to duplicate current spreadsheet.");
@@ -67,16 +82,9 @@ function produceOutputDoc(sourceSheet, outputDoc) {
   // TODO Walk other sheets as well (or drop them)
   var range = ssDest.getDataRange();
   var values = range.getValues();
-  var tplHits = 0;
-  for (r=0; r<values.length; r++) {
-    for (c=0; c<values[0].length; c++) {
-      var cell = values[r][c];
-      if (outputDoc.hasOwnProperty(cell)) {
-        values[r][c] = outputDoc[cell];
-        tplHits++, totalTemplateHits++;
-      }
-    }
-  }
+
+  var tplHits = applyTemplating(values, outputDoc);
+
   range.setValues(values); // commit changes
   Logger.log("Spreadsheet '" + ssDest.getName() + "': " + tplHits + " variables replaced.");
 
@@ -127,4 +135,3 @@ function loadTemplatesData(range) {
   }
   return outputDocs;
 }
-
