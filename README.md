@@ -32,26 +32,18 @@ templated).
 ### Example
 #### Template sheet
 In first sheet:
-||User id|Color|
-|-| - | - |
-|Some fixed text | ${userId}  |${color}|
+
+![template](https://raw.github.com/arnaudj/apps-sheetsbatchgenerator/master/res/static/template.png)
 
 #### Variables matrix sheet
 In sheet TemplatesVariables:
 
-|${userId}|${color}|OUTPUT_NAME|
-|- | - | - |
-| suid0 | yellow | doc 1|
-| suid1 | orange | doc 2|
-| suid2 | green | doc 3|
+![variables](https://raw.github.com/arnaudj/apps-sheetsbatchgenerator/master/res/static/varmatrix.png)
 
 #### Output
 Will produce 3 documents (doc 1..3) to Google Drive:
 
-"doc 1":
-||User id|Color|
-|-| - | - |
-|Some fixed text | suid0  |yellow|
+![output 1](https://raw.github.com/arnaudj/apps-sheetsbatchgenerator/master/res/static/doc1.png)
 
 Same principle for doc2 and doc3.
 
