@@ -1,29 +1,3 @@
-/**
- * Allows to create documents in batch from a template sheet, with variations based on variables.
- * Supports export as PDF for download (cf option EXPORT_AS_PDF)
- * 
- * Deployment:
- * 1- Add the script to your spreadsheet.
- * 2- Add a sheet named 'TemplatesVariables' with variables/content correspondance
- * 3- Configure this sheet to and as many entries as needed (1 for each document to generate)
- * - Add as many variables as needed: 1 col for each variable
- * - Add as many rows as needed: 1 row per document to generate
- * - For each row: the special column OUTPUT_NAME will contain the name of the output document
- * 4- Run Generate Batch from menu
- * 5- Go to Recent files to see files created
- * 6- Check your emails for PDF download (if enabled)
- *
- * Known limitations:
- * - Each variable must have its own cell, in template document (no support for regular content
- * plus variable in a single cell)
- * - Currently, only one sheet per spreadsheet is subject to templating (others are copied, but not
- * templated).
- * - Output folder cannot be configured
- *
- * Reference:
- * https://developers.google.com/apps-script/reference/
- */
-
 // Export as PDF documents once they are ready (will email links to you by email)
 var EXPORT_AS_PDF = 1;
 
