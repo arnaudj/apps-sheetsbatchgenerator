@@ -21,13 +21,15 @@ For each row, 1 output document is generated.
 5. Go to google drive 'Recent files' to see files created
 6. Check your emails for PDF download (if enabled)
 
+### Features
+* Send email with links to download documents as PDF
+* Variables do not need their own cell (ex cell: some text and some ${variable})
 
 ### Known limitations
-* Each variable must have its own cell, in template document (no support for regular content
-plus variable in a single cell)
 * Currently, only one sheet per spreadsheet is subject to templating (others are copied, but not
 templated).
 - Output folder cannot be configured
+- PDF to be downloaded manually
 
 ### Example
 #### Template sheet

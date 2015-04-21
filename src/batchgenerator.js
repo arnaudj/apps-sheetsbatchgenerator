@@ -54,13 +54,54 @@ function applyTemplating(values, outputDoc) {
     for (c=0; c<values[0].length; c++) {
       var cell = values[r][c];
       if (outputDoc.hasOwnProperty(cell)) {
-        values[r][c] = outputDoc[cell];
+        cell = outputDoc[cell];
         tplHits++, totalTemplateHits++;
+      } else if (cell.indexOf("${") != -1){
+        // possible case: vars mixed with content
+        var ret = applyTemplatingInline(cell, outputDoc);
+        cell = ret.val;
+        tplHits += ret.hits;
+        totalTemplateHits += ret.hits;
       }
+      values[r][c] = cell;
     }
   }
 
   return tplHits;
+}
+
+/**
+ * Attempt to replace all vars inline
+ */
+function applyTemplatingInline(cell, map) {
+  var hits = 0;
+
+  for(var watchdog=0; watchdog < 100; watchdog++){
+    var beginIdx = cell.indexOf("${");
+    if (beginIdx == -1)
+      break;
+
+    Logger.log("beginIdx: " + beginIdx);
+
+    var endIdx = cell.indexOf("}", beginIdx);
+    if (endIdx == -1) {
+      break;
+    }
+    Logger.log("endIdx: " + endIdx);
+
+    var varName = "${" + cell.substr(beginIdx + 2, endIdx - (beginIdx + 2)) + "}";
+    Logger.log("varName: " + varName);
+
+    if (map.hasOwnProperty(varName)) {
+      var replacementVal = map[varName];
+      Logger.log("replacementVal: " + replacementVal);
+      cell = cell.replace(varName, replacementVal);
+      hits++;
+      Logger.log("cell after replace: ##" + cell+"##");
+    }
+  }
+
+  return {"val": cell, "hits": hits};
 }
 
 function produceOutputDoc(sourceSheet, outputDoc) {
