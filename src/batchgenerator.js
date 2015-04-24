@@ -56,7 +56,7 @@ function applyTemplating(values, outputDoc) {
       if (outputDoc.hasOwnProperty(cell)) {
         cell = outputDoc[cell];
         tplHits++, totalTemplateHits++;
-      } else if (cell.indexOf("${") != -1){
+      } else if (cell.toString().indexOf("${") != -1){
         // possible case: vars mixed with content
         var ret = applyTemplatingInline(cell, outputDoc);
         cell = ret.val;
