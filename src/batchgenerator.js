@@ -100,6 +100,7 @@ function produceOutputDoc(sourceSheet, outputDoc) {
     return;
   }
   var ssDest = sourceSheet.copy(outputDoc['OUTPUT_NAME']);
+  Utilities.sleep(500); // Sleep to fix bug where first getName() call leads to exception
   Logger.log("Created clone '" + ssDest.getName() + "', at " + ssDest.getUrl());
 
   // Remove variables sheet from target document
